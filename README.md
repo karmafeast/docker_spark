@@ -5,6 +5,7 @@ Docker images to:
 
 Currently version:
 * Spark 2.4.3 for Hadoop 2.7.0 with OpenJDK 8
+* Spark Driver should be installed with python 3.7 as the spark executor uses python 3.7
 
 ## Using Docker Compose
 ```sh
@@ -18,9 +19,27 @@ $ sudo docker run -it --rm --net host jupyter/pyspark-notebook
 ```
 Then test in jupyter notebook :
 ```py
-from pyspark import SparkConf, SparkContext
-conf = SparkConf().setAppName('hello').setMaster('spark://<MASTER_NODE_PUBLIC_IP>:7077').setSparkHome('/opt/spark/') 
-sc = SparkContext(conf=conf)
+
+import pyspark
+from pyspark import SparkContext
+from pyspark.sql import SQLContext, Row
+
+conf = pyspark.SparkConf()
+conf.set("spark.driver.memory", "11g")
+conf.setMaster("spark://<MASTER_IP>:7077")
+
+from pyspark.sql import SparkSession
+
+spark = SparkSession \
+    .builder \
+    .appName("task usage") \
+    .config(conf=conf) \
+    .getOrCreate()
+    
+sc = spark.sparkContext
+#creates sql context
+sqlContext = SQLContext(sc)
+
 x = ['spark', 'rdd', 'example', 'sample', 'example'] 
 y = sc.parallelize(x)
 y.collect()
