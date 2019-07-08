@@ -8,6 +8,9 @@ services:
       - "7077:7077"
     environment:
       - INIT_DAEMON_STEP=setup_spark
+    volumes:
+      - ./task_usage/:/task_usage
+      - ./machine_events:/machine_events
   spark-worker-1:
     image: ansjin/spark-worker:${SPARK_VERSION}
     container_name: spark-worker-1
@@ -17,3 +20,6 @@ services:
       - "8081:8081"
     environment:
       - "SPARK_MASTER=spark://spark-master:7077"
+    volumes:
+      - ./task_usage/:/task_usage
+      - ./machine_events:/machine_events

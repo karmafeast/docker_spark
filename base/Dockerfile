@@ -21,6 +21,28 @@ RUN apt-get -y update && \
     apt-get install --no-install-recommends -y openjdk-8-jre-headless ca-certificates-java wget && \
     rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update \
+ && apt-get install -y curl unzip \
+    build-essential libpq-dev libssl-dev openssl libffi-dev zlib1g-dev
+
+RUN apt-get install -y software-properties-common
+
+RUN add-apt-repository ppa:deadsnakes/ppa -y
+
+RUN apt-get update \
+ && apt-get install -y python3-pip python3.7-dev python3.7 \
+ && ln -s /usr/bin/python3.7 /usr/bin/python \
+ && easy_install3 pip py4j \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+
+
+
+ENV PYTHONHASHSEED 0
+ENV PYTHONIOENCODING UTF-8
+ENV PIP_DISABLE_PIP_VERSION_CHECK 1
+
 RUN cd /tmp && \
     wget -q http://mirrors.ukfast.co.uk/sites/ftp.apache.org/spark/spark-${APACHE_SPARK_VERSION}/spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz && \
     echo "E8B7F9E1DEC868282CADCAD81599038A22F48FB597D44AF1B13FCC76B7DACD2A1CAF431F95E394E1227066087E3CE6C2137C4ABAF60C60076B78F959074FF2AD *spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz" | sha512sum -c - && \
@@ -38,6 +60,3 @@ ENV SPARK_OPTS --driver-java-options=-Xms1024M --driver-java-options=-Xmx4096M -
 #Give permission to execute scripts
 RUN chmod +x /wait-for-step.sh && chmod +x /execute-step.sh && chmod +x /finish-step.sh
 
-# Fix the value of PYTHONHASHSEED
-# Note: this is needed when you use Python 3.3 or greater
-ENV PYTHONHASHSEED 1
