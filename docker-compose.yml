@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   spark-master:
-    image: karmafeast/spark:latest
+    image: karmaterminal/spark:latest
     container_name: spark-master
     hostname: spark-master
     ports:
@@ -9,19 +9,23 @@ services:
       - "7077:7077"
     networks:
       - spark-network
+    volumes:
+      - /data:/data
     environment:
       - "SPARK_LOCAL_IP=spark-master"
       - "SPARK_MASTER_PORT=7077"
       - "SPARK_MASTER_WEBUI_PORT=8080"
     command: "/start-master.sh"
   spark-worker:
-    image: karmafeast/spark:latest
+    image: karmaterminal/spark:latest
     depends_on:
       - spark-master
     ports:
       - 8080
     networks:
       - spark-network
+    volumes:
+      - /data:/data
     environment:
       - "SPARK_MASTER=spark://spark-master:7077"
       - "SPARK_WORKER_WEBUI_PORT=8080"
@@ -31,4 +35,3 @@ networks:
     driver: bridge
     ipam:
       driver: default
-
