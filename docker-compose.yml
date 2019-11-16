@@ -1,25 +1,59 @@
 version: '3.7'
 services:
   spark-master:
-    image: ansjin/spark-master:${SPARK_VERSION}
+    image: karmaterminal/spark-master:${SPARK_VERSION}
     container_name: spark-master
     ports:
       - "8080:8080"
       - "7077:7077"
+      - "6066:6066"
     environment:
       - INIT_DAEMON_STEP=setup_spark
     volumes:
-      - ./task_usage/:/task_usage
-      - ./machine_events:/machine_events
-  spark-worker-1:
-    image: ansjin/spark-worker:${SPARK_VERSION}
-    container_name: spark-worker-1
+      - /data/spark/task_usage/:/task_usage
+      - /data/spark/machine_events:/machine_events
+      - /data:/data
+    networks:
+      - spark-network
+  spark-worker:
+    image: karmaterminal/spark-worker:${SPARK_VERSION}
+    container_name: spark-worker
     depends_on:
       - spark-master
     ports:
-      - "8081:8081"
+      - "8081"
     environment:
       - "SPARK_MASTER=spark://spark-master:7077"
+      - "SPARK_WORKER_CORES=32"
+      - "SPARK_WORKER_MEMORY=96g"
+      - "SPARK_EXECUTOR_MEMORY=96g"
+      - "SPARK_DRIVER_MEMORY=32g"
     volumes:
-      - ./task_usage/:/task_usage
-      - ./machine_events:/machine_events
+      - /data/spark/task_usage/:/task_usage
+      - /data/spark/machine_events:/machine_events
+      - /data:/data
+    networks:
+      - spark-network
+  zeppelin:
+    image: karmaterminal/zeppelin:latest
+    container_name: zeppelin
+    environment:
+      ZEPPELIN_PORT: 8090
+      ZEPPELIN_JAVA_OPTS: >-
+        -Dspark.driver.memory=96g
+        -Dspark.executor.memory=96g
+        -Dspark.driver.memory=32g
+      MASTER: "spark://spark-master:7077"
+    ports:
+      - 8090:8090
+    networks:
+      - spark-network
+    volumes:
+      - /data:/data
+      - /data/zeppelin/notebook:/zeppelin/notebook
+      - /data/zeppelin/logs:/zeppelin/logs
+networks:
+  spark-network:
+    driver: bridge
+    ipam:
+      driver: default
