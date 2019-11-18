@@ -26,7 +26,8 @@ services:
       - "SPARK_MASTER=spark://spark-master:7077"
       - "SPARK_WORKER_CORES=32"
       - "SPARK_WORKER_MEMORY=96g"
-      - "SPARK_EXECUTOR_MEMORY=8g"
+      - "SPARK_EXECUTOR_MEMORY=32g"
+      - "SPARK_EXECUTOR_CORES=8"
       - "SPARK_DRIVER_MEMORY=32g"
     volumes:
       - /data/spark/task_usage/:/task_usage
@@ -40,8 +41,10 @@ services:
     environment:
       ZEPPELIN_PORT: 8090
       ZEPPELIN_JAVA_OPTS: >-
-        -Dspark.executor.memory=8g
+        -Dspark.executor.memory=32g
         -Dspark.driver.memory=32g
+        -Dspark.shuffle.service.enabled=true
+        -Dspark.dynamicAllocation.enabled=true
       MASTER: "spark://spark-master:7077"
     ports:
       - 8090:8090

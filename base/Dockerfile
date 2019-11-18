@@ -29,7 +29,7 @@ RUN apt-get -y update && \
 
 RUN apt-get update \
  && apt-get install -y curl unzip \
-    build-essential libpq-dev libssl-dev openssl libffi-dev zlib1g-dev
+    build-essential libpq-dev libssl-dev openssl libffi-dev zlib1g-dev ssh rsync
 
 RUN apt-get install -y software-properties-common
 

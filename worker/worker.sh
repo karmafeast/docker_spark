@@ -8,6 +8,8 @@ mkdir -p $SPARK_WORKER_LOG
 
 export SPARK_HOME=/usr/local/spark
 
+/usr/local/spark/sbin/start-shuffle-service.sh
+
 ln -sf /dev/stdout $SPARK_WORKER_LOG/spark-worker.out
 
 /usr/local/spark/sbin/../bin/spark-class org.apache.spark.deploy.worker.Worker \
