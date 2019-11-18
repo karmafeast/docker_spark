@@ -43,8 +43,6 @@ services:
       ZEPPELIN_JAVA_OPTS: >-
         -Dspark.executor.memory=32g
         -Dspark.driver.memory=32g
-        -Dspark.shuffle.service.enabled=true
-        -Dspark.dynamicAllocation.enabled=true
       MASTER: "spark://spark-master:7077"
     ports:
       - 8090:8090
