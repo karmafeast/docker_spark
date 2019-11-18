@@ -13,6 +13,12 @@ COPY finish-step.sh /
 #COPY bde-spark.css /css/org/apache/spark/ui/static/timeline-view.css
 USER root
 
+RUN echo "user      soft      nofile      500000" >> /etc/security/limits.conf && \
+    echo "user      hard      nofile      500000" >> /etc/security/limits.conf && \
+    echo "root      soft      nofile      500000" >> /etc/security/limits.conf && \
+    echo "root      hard      nofile      500000" >> /etc/security/limits.conf && \
+    echo "session required                        pam_limits.so" >> /etc/pam.d/common-session
+
 # Spark dependencies
 ENV APACHE_SPARK_VERSION 2.4.4
 ENV HADOOP_VERSION 2.7
