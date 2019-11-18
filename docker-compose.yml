@@ -17,7 +17,6 @@ services:
       - spark-network
   spark-worker:
     image: karmaterminal/spark-worker:${SPARK_VERSION}
-    container_name: spark-worker
     depends_on:
       - spark-master
     ports:
