@@ -39,10 +39,17 @@ services:
     image: karmaterminal/zeppelin:latest
     container_name: zeppelin
     environment:
+      JAVA_INTP_OPTS: "-Xmx128g"
+      SPARK_SUBMIT_OPTIONS: "--driver-memory 32g --executor-memory 32g"
       ZEPPELIN_PORT: 8090
       ZEPPELIN_JAVA_OPTS: >-
         -Dspark.executor.memory=32g
         -Dspark.driver.memory=32g
+        -Dspark.executor.cores=8
+        -Dspark.dynamicAllocation.enabled=true
+        -Dspark.shuffle.service.enabled=true
+        -Dspark.driver.maxResultSize=128g
+       
       MASTER: "spark://spark-master:7077"
     ports:
       - 8090:8090
