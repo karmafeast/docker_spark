@@ -9,6 +9,7 @@ ENV INIT_DAEMON_STEP spark_master_init
 COPY wait-for-step.sh /
 COPY execute-step.sh /
 COPY finish-step.sh /
+COPY requirements.txt /
 
 #COPY bde-spark.css /css/org/apache/spark/ui/static/timeline-view.css
 USER root
@@ -63,11 +64,9 @@ ENV PYTHONPATH $SPARK_HOME/python:$SPARK_HOME/python/lib/py4j-0.10.7-src.zip
 ENV MESOS_NATIVE_LIBRARY /usr/local/lib/libmesos.so
 ENV SPARK_OPTS --driver-java-options=-Xms4G --driver-java-options=-Xmx128G --driver-java-options=-Dlog4j.logLevel=info
 
-COPY executor_reqirements.txt /
-
-RUN cd / && \
-    pip3 install -r executor_requirements.txt -t /usr/lib/python3/dist-packages
+RUN pip3 install -r /requirements.txt -t /usr/lib/python3/dist-packages --upgrade
 
 #Give permission to execute scripts
 RUN chmod +x /wait-for-step.sh && chmod +x /execute-step.sh && chmod +x /finish-step.sh
+
 
