@@ -66,6 +66,9 @@ ENV SPARK_OPTS --driver-java-options=-Xms4G --driver-java-options=-Xmx128G --dri
 
 RUN pip3 install -r /requirements.txt -t /usr/lib/python3/dist-packages --upgrade
 
+#nltk download
+RUN python -m nltk.downloader -d /usr/local/share/nltk_data all
+
 #Give permission to execute scripts
 RUN chmod +x /wait-for-step.sh && chmod +x /execute-step.sh && chmod +x /finish-step.sh
 
