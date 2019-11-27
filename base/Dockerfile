@@ -69,6 +69,8 @@ RUN pip3 install -r /requirements.txt -t /usr/lib/python3/dist-packages --upgrad
 #nltk download
 RUN python -m nltk.downloader -d /usr/local/share/nltk_data all
 
+COPY spark-defaults.conf /usr/local/spark/conf/
+
 #Give permission to execute scripts
 RUN chmod +x /wait-for-step.sh && chmod +x /execute-step.sh && chmod +x /finish-step.sh
 

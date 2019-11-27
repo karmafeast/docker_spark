@@ -8,11 +8,13 @@ services:
       - "7077:7077"
       - "6066:6066"
       - "4040:4040"
+      - "18080:18080"
     environment:
       - INIT_DAEMON_STEP=setup_spark
+#     - "SPARK_PUBLIC_DNS=master_public_name.blah"
     volumes:
       - /data/spark/task_usage/:/task_usage
-      - /data/spark/machine_events:/machine_events
+      - /data/spark/spark_events:/spark_events
       - /data:/data
     networks:
       - spark-network
@@ -29,9 +31,10 @@ services:
       - "SPARK_EXECUTOR_MEMORY=32g"
       - "SPARK_EXECUTOR_CORES=8"
       - "SPARK_DRIVER_MEMORY=32g"
+#     - "SPARK_PUBLIC_DNS=master_public_name.blah"
     volumes:
       - /data/spark/task_usage/:/task_usage
-      - /data/spark/machine_events:/machine_events
+      - /data/spark/spark_events:/spark_events
       - /data:/data
     networks:
       - spark-network
