@@ -43,9 +43,6 @@ RUN apt-get update \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
-
-
-
 ENV PYTHONHASHSEED 0
 ENV PYTHONIOENCODING UTF-8
 ENV PIP_DISABLE_PIP_VERSION_CHECK 1
@@ -70,6 +67,7 @@ RUN pip3 install -r /requirements.txt -t /usr/lib/python3/dist-packages --upgrad
 RUN python -m nltk.downloader -d /usr/local/share/nltk_data all
 
 COPY spark-defaults.conf /usr/local/spark/conf/
+COPY log4j.properties /usr/local/spark/conf/
 
 #Give permission to execute scripts
 RUN chmod +x /wait-for-step.sh && chmod +x /execute-step.sh && chmod +x /finish-step.sh
