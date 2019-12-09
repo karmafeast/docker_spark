@@ -10,8 +10,8 @@ services:
       - "4040:4040"
       - "18080:18080"
     environment:
-      - INIT_DAEMON_STEP=setup_spark
-#     - "SPARK_PUBLIC_DNS=master_public_name.blah"
+      - "INIT_DAEMON_STEP=setup_spark"
+      - "SPARK_NO_DAEMONIZE=true"
     volumes:
       - /data/spark/task_usage/:/task_usage
       - /data/spark/spark_events:/spark_events
@@ -27,11 +27,11 @@ services:
     environment:
       - "SPARK_MASTER=spark://spark-master:7077"
       - "SPARK_WORKER_CORES=32"
-      - "SPARK_WORKER_MEMORY=128g"
-      - "SPARK_EXECUTOR_MEMORY=32g"
-      - "SPARK_EXECUTOR_CORES=8"
-      - "SPARK_DRIVER_MEMORY=32g"
-#     - "SPARK_PUBLIC_DNS=master_public_name.blah"
+      - "SPARK_WORKER_MEMORY=395g"
+      - "SPARK_EXECUTOR_MEMORY=192g"
+      - "SPARK_EXECUTOR_CORES=16"
+      - "SPARK_DRIVER_MEMORY=192g"
+      - "SPARK_NO_DAEMONIZE=true"
     volumes:
       - /data/spark/task_usage/:/task_usage
       - /data/spark/spark_events:/spark_events
@@ -42,16 +42,15 @@ services:
     image: karmaterminal/zeppelin:latest
     container_name: zeppelin
     environment:
-      JAVA_INTP_OPTS: "-Xmx128g"
-      SPARK_SUBMIT_OPTIONS: "--driver-memory 32g --executor-memory 32g"
+      JAVA_INTP_OPTS: "-Xmx192g"
       ZEPPELIN_PORT: 8090
       ZEPPELIN_JAVA_OPTS: >-
-        -Dspark.executor.memory=32g
-        -Dspark.driver.memory=32g
-        -Dspark.executor.cores=8
+        -Dspark.executor.memory=192g
+        -Dspark.driver.memory=192g
+        -Dspark.executor.cores=16
         -Dspark.dynamicAllocation.enabled=true
         -Dspark.shuffle.service.enabled=true
-        -Dspark.driver.maxResultSize=128g
+        -Dspark.driver.maxResultSize=192g
       MASTER: "spark://spark-master:7077"
     ports:
       - 8090:8090
@@ -61,6 +60,7 @@ services:
       - /data:/data
       - /data/zeppelin/notebook:/zeppelin/notebook
       - /data/zeppelin/logs:/zeppelin/logs
+      - /data/spark/spark_events:/spark_events
 networks:
   spark-network:
     driver: bridge

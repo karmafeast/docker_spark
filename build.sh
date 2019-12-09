@@ -27,7 +27,7 @@ build_base base
 build master
 build worker
 
-#docker push karmaterminal/spark-base:${SPARK_VERSION}
-#docker push karmaterminal/spark-master:${SPARK_VERSION}
-#docker push karmaterminal/spark-worker:${SPARK_VERSION}
+docker push karmaterminal/spark-base:${SPARK_VERSION}
+docker push karmaterminal/spark-master:${SPARK_VERSION}
+docker push karmaterminal/spark-worker:${SPARK_VERSION}
 
