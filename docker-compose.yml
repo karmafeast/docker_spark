@@ -11,7 +11,6 @@ services:
       - "18080:18080"
     environment:
       - "INIT_DAEMON_STEP=setup_spark"
-      - "SPARK_NO_DAEMONIZE=true"
     volumes:
       - /data/spark/task_usage/:/task_usage
       - /data/spark/spark_events:/spark_events
@@ -31,7 +30,6 @@ services:
       - "SPARK_EXECUTOR_MEMORY=192g"
       - "SPARK_EXECUTOR_CORES=16"
       - "SPARK_DRIVER_MEMORY=192g"
-      - "SPARK_NO_DAEMONIZE=true"
     volumes:
       - /data/spark/task_usage/:/task_usage
       - /data/spark/spark_events:/spark_events
