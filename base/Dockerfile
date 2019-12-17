@@ -24,6 +24,10 @@ RUN echo "user      soft      nofile      500000" >> /etc/security/limits.conf &
 ENV APACHE_SPARK_VERSION 2.4.4
 ENV HADOOP_VERSION 2.7
 
+# SPARK / PYTHON env var
+ENV SPARK_HOME /usr/local/spark
+ENV PYTHONPATH /usr/local/lib/python3.7/dist-packages:$SPARK_HOME/python:$SPARK_HOME/python/lib/py4j-0.10.7-src.zip
+
 RUN apt-get -y update && \
     apt-get install --no-install-recommends -y openjdk-8-jre-headless ca-certificates-java wget && \
     rm -rf /var/lib/apt/lists/*
@@ -39,9 +43,14 @@ RUN add-apt-repository ppa:deadsnakes/ppa -y
 RUN apt-get update \
  && apt-get install -y python3-pip python3.7-dev python3.7 \
  && ln -s /usr/bin/python3.7 /usr/bin/python \
- && easy_install3 pip py4j \
+# && easy_install3 pip py4j \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
+
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
+    && python get-pip.py
+
+RUN pip install py4j --upgrade
 
 ENV PYTHONHASHSEED 0
 ENV PYTHONIOENCODING UTF-8
@@ -54,14 +63,11 @@ RUN cd /tmp && \
     rm spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
 RUN cd /usr/local && ln -s spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} spark
 
-#
-# Spark and Mesos config
-ENV SPARK_HOME /usr/local/spark
-ENV PYTHONPATH $SPARK_HOME/python:$SPARK_HOME/python/lib/py4j-0.10.7-src.zip
+# Spark Mesos config
 ENV MESOS_NATIVE_LIBRARY /usr/local/lib/libmesos.so
 ENV SPARK_OPTS --driver-java-options=-Xms4G --driver-java-options=-Xmx128G --driver-java-options=-Dlog4j.logLevel=info
 
-RUN pip3 install -r /requirements.txt -t /usr/lib/python3/dist-packages --upgrade
+RUN pip install -r /requirements.txt -t /usr/local/lib/python3.7/dist-packages --upgrade
 
 #nltk download
 RUN python -m nltk.downloader -d /usr/local/share/nltk_data all
